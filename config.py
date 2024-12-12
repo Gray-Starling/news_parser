@@ -4,8 +4,8 @@ from tools.logger import setup_logger
 
 load_dotenv()
 
-SERVER_PORT = os.getenv('SERVER_PORT')
-GET_NEWS_DATA_API_PATH = os.getenv('GET_NEWS_DATA_API_PATH')
+SERVER_PORT = os.getenv('SERVER_PORT') if os.getenv('SERVER_PORT') else 4040
+GET_NEWS_DATA_API_PATH = os.getenv('GET_NEWS_DATA_API_PATH') if os.getenv('GET_NEWS_DATA_API_PATH') else "/data"
 
 server_logger = setup_logger("server", "server")
 scrapper_logger = setup_logger("scrapper", "scrapper")
