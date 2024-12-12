@@ -36,6 +36,7 @@ async def fetch_news(session: ClientSession, scrapper_name: str, scrapper_functi
         news = await scrapper_function(session)
         scrapper_logger.info(
             f"-- Fetched {len(news)} articles from {scrapper_name}.")
+        print(f"-- Fetched {len(news)} articles from {scrapper_name}.")
         return news
     except Exception as e:
         scrapper_logger.error(f"-- Error fetching {scrapper_name} news: {e}")
@@ -102,13 +103,12 @@ async def main():
     existing_articles = set()
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    data_dir = os.path.join(script_dir, 'data')  # формируем путь к папке 'data'
+    data_dir = os.path.join(script_dir, 'data')
 
-    if not os.path.exists(data_dir):  # проверяем существование папки
-        os.makedirs(data_dir)  # создаем папку, если она не существует
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
 
     file_path = os.path.join(data_dir, 'news_data.csv')
-    # file_path = os.path.join(script_dir, "./data/news_data.csv")
     existing_articles = read_existing_articles(file_path)
 
     try:

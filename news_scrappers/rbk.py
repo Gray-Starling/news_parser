@@ -79,12 +79,9 @@ async def parse_articles_in_category(session, url):
 
         for element in article_elements:
             article = {}
-            time_span = element.find("span").get_text(strip=True)
-            article_date = parse_time_text(time_span, "rbk")
             article_link = element.find("a")
 
             if article_link["href"] not in existing_articles:
-                article["date"] = article_date
                 article["link"] = article_link["href"]
 
                 articles.append(article)
@@ -113,6 +110,8 @@ async def parse_articles(session, url):
         html = await async_fetch_html(session, url)
         soup = BeautifulSoup(html, "html.parser")
 
+        time_span = soup.find("time")['datetime']
+        
         article_title = soup.find("h1").get_text(strip=True)
         article_text_div = soup.find_all(
             "div", class_="article__text article__text_free"
@@ -135,7 +134,7 @@ async def parse_articles(session, url):
 
         article_text = article_text_div[0].get_text(separator=" ", strip=True)
 
-        article = {"title": article_title, "text": article_text}
+        article = {"title": article_title, "text": article_text, "date": time_span}
 
         return article
     except Exception as e:
@@ -168,7 +167,7 @@ async def async_rbk_news_scrapper(session):
                 "news_source_link": main_url,
                 "category_name": category["name"],
                 "category_link": category["link"],
-                "article_date": element["date"],
+                "article_date": full_article.get("date", ""),
                 "article_link": element["link"],
                 "article_title": full_article.get("title", ""),
                 "article_text": full_article.get("text", ""),
